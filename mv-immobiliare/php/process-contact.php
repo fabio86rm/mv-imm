@@ -1,5 +1,5 @@
 <?php
-include 'functions.php';
+include '../mvimm/php/functions.php';
 sec_session_start();;
 
 function chkEmail($email)
