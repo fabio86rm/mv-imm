@@ -220,65 +220,13 @@ if (!isset($_SESSION['entrato'])){
 			</div>
 
           <div class="form-group col-md-12">
-<!--             <h4 for="inputFile">Selezionare un file *</h4> -->
-<!--             <input type="file" id="inputFile" name="immagine0" accept="image/*" required> -->
-<!--             <p class="help-block">Inserire un'immagine. Massima grandezza 5MB</p> -->
-            First Field is Compulsory. Only JPEG,PNG,JPG Type Image Uploaded. Image Size Should Be Less Than 100KB.
+            Formati consentiti per le immagini: JPEG,JPG,PNG,GIF. Dimensione massima per immagine 5MB.
             <div id="filediv">
-            	<input name="file[]" type="file" id="file"/>
+            	<input name="file[]" type="file" id="file" accept="image/*"/>
             	<input type="text" class="form-control" id="inputDescrizioneImmagine" placeholder="Descrizione dell'immagine" name="descrizioneImmagine[]">
             </div>
-            <input type="button" id="add_more" class="upload" value="Aggiungi altre immagini"/>
+            <input type="button" id="add_more" class="btn btn-primary" value="Aggiungi altre immagini"/>
           </div>
-          
-<!--           <div class="form-group col-md-12"> -->
-<!--             <h4 for="comment">Inserire una descrizione dell'immagine</h4> -->
-<!--             <input type="text" class="form-control" id="inputDescrizioneImmagine" placeholder="Descrizione dell'immagine" name="descrizioneImmagine"> -->
-<!--           </div> -->
-
-<!--           <div id="container1"> -->
-<!--           questo div contiene il form per inserire le nuove immagini -->
-<!--           </div> -->
-          
-<!--           aggiunta di altre immagini -->
- 				<script>
-					/*$(document).ready(function() {
-						var max_fields = 100; // numero massimo di foto che è possibile aggiungere
-						var wrapper = $("#container1");
-						var add_button = $(".cta-add");
-
-						var x = 0;
-						$(add_button).click(function(e) {
-							e.preventDefault();
-							if (x < max_fields) {
-								x++;
-								$(wrapper).append('<div>'+
-							'<div class="form-group col-md-12">'+
-								'<h4 for="inputFile">Selezionare un file</h4>'+
-								'<input type="file" id="inputFile" name="immagine'+x+'" accept="image/*" required>'+
-								'<p class="help-block">Inserire un\'immagine. Massima grandezza 5MB</p>'+
-							'</div>'+
-							'<div class="form-group col-md-12">'+
-								'<h4 for="comment">Inserire una descrizione dell\'immagine</h4>'+
-								'<input type="text" class="form-control" id="inputDescrizioneImmagine" placeholder="Descrizione dell\'immagine" name="descrizioneImmagine'+x+'">'+
-							'</div>'+
-								'<button class="cta-delete">Delete Section &nbsp; <span style="font-size:16px; font-weight:bold;">- </span></button>'+
-							'</div>');
-							} else {
-								alert('Il limite massimo di immagini')
-							}
-						});
-
-						$(wrapper).on("click", ".cta-delete", function(e) {
-							x--;
-							e.preventDefault();
-							$(this).parent('div').remove();
-						})
-					});*/
-				</script>
-<!-- 				<button class="cta-add">Aggiungi altre immagini &nbsp; <span style="font-size:16px; font-weight:bold;">+ </span></button> -->
-<!-- 		   fine aggiunta di altre immagini -->
-          
           
           <div class="form-group">
           	<button type="submit" class="btn btn-default">Invia</button>
