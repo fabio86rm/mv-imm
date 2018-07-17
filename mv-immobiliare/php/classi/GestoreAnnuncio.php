@@ -10,8 +10,6 @@ class GestoreAnnuncio{
     
     public function inserisciAnnuncio($mysqli){
         
-        $numMaxImmagini = 100;
-        
         $categoriaAnnuncio = $_POST['categoriaAnnuncio'];
         
         $citta = $_POST['citta'];
@@ -20,11 +18,7 @@ class GestoreAnnuncio{
         $descrizioneAnnuncio = $_POST['descrizioneAnnuncio'];
         $numStanze = $_POST['stanze'];
         
-//         $descrizioneImmagine = $_POST['descrizioneImmagine'];
-        
         extract($_POST);
-        $error=array();
-        $extension=array("jpeg","jpg","png","gif");
         
             
         $sqlInsertAnnuncio = "INSERT INTO $this->tbl_annunci (citta, indirizzo, prezzo, descrizione, num_stanze) VALUES ('$citta','$indirizzo',$prezzo,'$descrizioneAnnuncio', $numStanze)";
@@ -64,109 +58,51 @@ class GestoreAnnuncio{
             $_SESSION['inserito'] = 'NOK';
             $_SESSION['messaggio'] = 'Errore durante l\'inserimento dell\'annuncio: '.$this->errorMsg;
             throw new RuntimeException('Superata la dimensione massima consentita per il caricamento dei file.');
-            //        echo "Dimensione troppo grande";
+//             echo "Dimensione troppo grande";
         } else {
             $mysqli->commit();
             $_SESSION['inserito'] = 'OK';
             $_SESSION['messaggio'] = 'Annuncio inserito con successo';
             echo $_SESSION['inserito'] . " " . $_SESSION['messaggio'];
         }
-//         for($i = 0; $i <= $numMaxImmagini; $i++){
-//             if (isset($_FILES["immagine".$i]['tmp_name']) && is_uploaded_file($_FILES["immagine".$i]['tmp_name'])){
-//                 //controllo la dimensione del file
-//                 if ($_FILES["immagine".$i]['size'] > 5242880){
-//                     $mysqli->rollback();
-//                     $_SESSION['inserito'] = 'NOK';
-//                     $_SESSION['messaggio'] = 'Immagine non inserita: Superata la dimensione massima consentita per il caricamento dei file!';
-//                     throw new RuntimeException('Superata la dimensione massima consentita per il caricamento dei file.');
-//                     //        echo "Dimensione troppo grande";
-//                 }
-//                 foreach($_FILES["immagine".$i]["tmp_name"] as $key=>$tmp_name)
-//                 {
-                
-//                     $nomeFileImmagine = $_FILES["immagine".$i]['name'][$key];
-//                     $file_tmp = $_FILES["immagine".$i]["tmp_name"][$key];
-//                     $ext = pathinfo($nomeFileImmagine,PATHINFO_EXTENSION);
-                    
-//                     if(in_array($ext,$extension))
-//                     {
-//                         if(!file_exists("../$cartellaAnnuncio/".$nomeFileImmagine))
-//                         {
-//                             move_uploaded_file($_FILES["immagine".$i]['tmp_name'][$key], "../$cartellaAnnuncio/" . $nomeFileImmagine);
-//                         }
-//                         else
-//                         {
-//                             $tmpfilename=basename($nomeFileImmagine,$ext);
-//                             $nomeFileImmagine=$tmpfilename.time().".".$ext;
-//                             move_uploaded_file($_FILES["immagine".$i]['tmp_name'][$key], "../$cartellaAnnuncio/" . $nomeFileImmagine);
-//                         }
-                        
-//                         $sqlInsertIdImgIdAnn = "INSERT INTO $this->tbl_immagini_annuncio (idAnnuncio, path_immagine, descrizione_immagine) VALUES ($idAnnuncio, '$cartellaAnnuncio/$nomeFileImmagine', '$descrizioneImmagine')";
-//                         echo $sqlInsertIdImgIdAnn;
-//                         $resultInsertIdImgIdAnn = $mysqli->query($sqlInsertIdImgIdAnn);
-                        
-//                         if($resultInsertIdImgIdAnn){
-//                             $mysqli->commit();
-//                             $_SESSION['inserito'] = 'OK';
-//                             $_SESSION['messaggio'] = 'Immagine inserita con successo';
-//                             echo $_SESSION['inserito'] . " " . $_SESSION['messaggio'];
-//                         } else{
-//                             $mysqli->rollback();
-//                             $_SESSION['inserito'] = 'NOK';
-//                             $_SESSION['messaggio'] = 'Immagine non inserita';
-//                             echo "Morto secondo inserimento";
-//                         }
-//                     }
-//                     else
-//                     {
-//                         array_push($error,"$nomeFileImmagine, ");
-//                         $_SESSION['messaggio'] = "Formato ".$ext." non accettato. I formati sopportati sono: gif, png, jpg";
-//                         echo "Immagine non accettata";
-//                     }
-//                 }
-//             }
-//         }
             
     }
     
     public function inserisciImmagini($mysqli, $idAnnuncio, $cartellaAnnuncio){
-        $imgInserite = true;
         
-        $j = 0;     // Variable for indexing uploaded image.
-        $target_path = '../'.$cartellaAnnuncio.'/';     // Declaring Path for uploaded images.
+        $imgInserite = true; // se un'immagine non dovesse essere inserita correttamente, è false
+        
+        $target_path = '../'.$cartellaAnnuncio.'/'; // path delle immagini da caricare
         $descrizioni = $_POST['descrizioneImmagine'];
         $i = 0;
-//         for ($i = 0; $i < count($_FILES['file']['name']); $i++) {
         foreach($descrizioni as $index => $value){
             $descrizioneImmagine = $descrizioni[$index];
-            // Loop to get individual element from the array
-            $validextensions = array("jpeg","jpg","png","gif");      // Extensions which are allowed.
-            $ext = explode('.', basename($_FILES['file']['name'][$i]));   // Explode file name from dot(.)
+            $validextensions = array("jpeg","jpg","png","gif"); // estensioni delle immagini accettate.
+            $ext = explode('.', basename($_FILES['file']['name'][$i])); // estensione
             $nomeImmagine = md5(uniqid()) . "." . $ext[count($ext) - 1];
-            echo "Nome dell'immagine: ".$nomeImmagine."<br/>";
-            echo "TargetPath: ".$target_path."<br/>";
+//             echo "Nome dell'immagine: ".$nomeImmagine."<br/>";
+//             echo "TargetPath: ".$target_path."<br/>";
             $file_extension = end($ext); // Store extensions in the variable.
-            $target_path = $target_path . $nomeImmagine;     // Set the target path with a new name of image.
-            $j = $j + 1;      // Increment the number of uploaded images according to the files in array.
-            if (($_FILES["file"]["size"][$i] < 1000000)     // Approx. 100kb files can be uploaded.
+            $target_path = $target_path . $nomeImmagine;     // imposta il path con un nuovo nome dell'immagine.
+            if (($_FILES["file"]["size"][$i] < 5000000)     // Approx. i file non devono avere una dimensione maggiore di 5Mb.
                 && in_array($file_extension, $validextensions)) {
                     if (move_uploaded_file($_FILES['file']['tmp_name'][$i], $target_path)) {
-                        // If file moved to uploads folder.
-                        echo $j. ').<span id="noerror">Immagine caricata con successo! '.$descrizioneImmagine.'</span><br/><br/>';
+                        // Se il file è stato caricato nella cartella, faccio l'inserimento nel DB
                         $sqlInsertIdImgIdAnn = "INSERT INTO $this->tbl_immagini_annuncio (idAnnuncio, path_immagine, descrizione_immagine) VALUES ($idAnnuncio, '$cartellaAnnuncio/$nomeImmagine', '$descrizioneImmagine')";
-                        echo $sqlInsertIdImgIdAnn;
+//                         echo $sqlInsertIdImgIdAnn;
                         $resultInsertIdImgIdAnn = $mysqli->query($sqlInsertIdImgIdAnn);
                         if(!$resultInsertIdImgIdAnn){
+                            // Se non è andato a buon fine l'inserimento nel DB
                             $this->errorMsg = "Errore durante l'inserimento dell'immagine nel database";
                             return false;
                         }
-                    } else {     //  If File Was Not Moved.
-                        echo $j. ').<span id="error">Errore nel caricare l\'immagine!. '.$descrizioneImmagine.'</span><br/><br/>';
+                    } else {
+                        // Se il file non è stato caricato correttamente nella cartella
                         $this->errorMsg = "Errore durante il caricamente dell'immagine";
                         $imgInserite = false;
                     }
-            } else {     //   If File Size And File Type Was Incorrect.
-                echo $j. ').<span id="error">***Dimensione o tipo dell\'immagine non validi***</span><br/><br/>';
+            } else {
+                // Se il file ha dimensione o tipo non corretti
                 $this->errorMsg = "Dimensione o tipo dell'immagine non validi";
                 $imgInserite = false;
             }
@@ -208,44 +144,6 @@ class GestoreAnnuncio{
                 $_SESSION['messaggio'] = 'Le immagini non sono state cancellate. Si prega di riprovare';
             }
         }
-    }
-    
-    
-    public function inserisci($mysqli){
-        
-        extract($_POST);
-        $error=array();
-        $extension=array("jpeg","jpg","png","gif");
-        $txtGalleryName = "imgAnnunci";
-        foreach($_FILES["immagine"]["tmp_name"] as $key=>$tmp_name)
-        {
-            $file_name=$_FILES["immagine"]["name"][$key];
-            $file_tmp=$_FILES["immagine"]["tmp_name"][$key];
-            $ext=pathinfo($file_name,PATHINFO_EXTENSION);
-            if(in_array($ext,$extension))
-            {
-//                 if(move_uploaded_file($_FILES['immagine']['tmp_name'][$key], "../$txtGalleryName/" . $_FILES['immagine']['name'][$key])){
-                if(!file_exists("../".$txtGalleryName."/".$file_name))
-                {
-                    echo "immagine inserita<br/>";
-                    move_uploaded_file($file_tmp=$_FILES["immagine"]["tmp_name"][$key],"../".$txtGalleryName."/".$file_name);
-                    echo "$file_name, $txtGalleryName, $file_tmp<br/>";
-                }
-                else
-                {
-                    echo "else: immagine non inserita<br/>";
-                    $tmpfilename=basename($file_name,$ext);
-                    $file_name=$tmpfilename.time().".".$ext;
-                    move_uploaded_file($file_tmp=$_FILES["immagine"]["tmp_name"][$key],"../".$txtGalleryName."/".$file_name);
-                    echo "$file_name, $txtGalleryName, $file_tmp, $file_name<br/>";
-                }
-            }
-            else
-            {
-                array_push($error,"$file_name, ");
-            }
-        }
-        
     }
     
 }
