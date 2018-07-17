@@ -45,7 +45,8 @@ $(document)
 											$(this).hide();
 											$("#abcd" + abc)
 													.append(
-															$("<img/>", {
+															$("<input type=\"button\" id=\"delete\" class=\"btn btn-danger\" value=\"Elimina immagine\" style=\"margin-left: 2%\"/>"
+																	, {
 																id : 'img',
 																src : 'x.png',
 																alt : 'delete'
@@ -65,7 +66,7 @@ $(document)
 						$('#previewimg' + abc).attr('src', e.target.result);
 					}
 					;
-					$('#upload').click(function(e) {
+					$('#btn-primary').click(function(e) {
 						var name = $(":file").val();
 						if (!name) {
 							alert("First Image Must Be Selected");
