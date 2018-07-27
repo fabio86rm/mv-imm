@@ -49,7 +49,6 @@ class GestoreAnnuncio{
             echo "Errore durante la creazione della cartella dell\'annuncio con ID $idAnnuncio";
         }
         
-//         if(!$this->inserisciImmagini($mysqli, $idAnnuncio, $cartellaAnnuncio)){
         if(!$this->spostaRidimensionaImmagine($mysqli, $idAnnuncio, $cartellaAnnuncio)){
             $mysqli->rollback();
             $_SESSION['inserito'] = 'NOK';
@@ -65,68 +64,7 @@ class GestoreAnnuncio{
             
     }
     
-    public function inserisciImmagini($mysqli, $idAnnuncio, $cartellaAnnuncio){
-        
-        $imgInserite = true; // se un'immagine non dovesse essere inserita correttamente, è false
-        
-        $descrizioni = $_POST['descrizioneImmagine'];
-        echo "Numero di immagini: ".sizeof($descrizioni)."<br/>";
-        $i = 0;
-        foreach($descrizioni as $index => $value){
-            $target_path = '../'.$cartellaAnnuncio.'/'; // path delle immagini da caricare
-            $descrizioneImmagine = $descrizioni[$index];
-            $descrizioneImmagine = str_replace("'","\'",$descrizioneImmagine);
-            $validextensions = array("jpeg","jpg","png","gif"); // estensioni delle immagini accettate.
-            $ext = explode('.', basename($_FILES['file']['name'][$index])); // estensione
-            $nomeImmagine = md5(uniqid(rand(), true)) . "." . $ext[count($ext) - 1];
-            $nomeImmaginePiccola = substr($nomeImmagine,0,strrpos($nomeImmagine,'.')).'_800'.substr($nomeImmagine,strrpos($nomeImmagine,'.'));
-            $file_extension = end($ext); // Store extensions in the variable.
-            $this->spostaRidimensionaImmagine($cartellaAnnuncio, $nomeImmagine, $nomeImmaginePiccola);
-            echo "Nome tmp dell'immagine: ".$_FILES['file']['tmp_name'][$index]."<br/>";
-            echo "Nome dell'immagine: ".$_FILES['file']['name'][$index]."<br/>";
-            echo "Nome creato dell'immagine: $nomeImmagine<br/>";
-            echo "TargetPath: $target_path<br/>";
-            echo "Estensione file: $file_extension<br/>";
-            echo "Descrizione: $descrizioneImmagine<br/>";
-            $target_path = $target_path . $nomeImmagine;     // imposta il path con un nuovo nome dell'immagine.
-            echo "Nome creato dell'immagine piccola: $nomeImmaginePiccola<br/>";
-//             if(strlen($_FILES['file']['name'][$i]) > 0){
-//                 if (($_FILES["file"]["size"][$i] < 5000000)     // Approx. i file non devono avere una dimensione maggiore di 5Mb.
-//                     && in_array(strtolower($file_extension), $validextensions)) {
-//                         if (move_uploaded_file($_FILES['file']['tmp_name'][$i], $target_path)) {
-//                             // Se il file è stato caricato nella cartella, faccio l'inserimento nel DB
-//                             $sqlInsertIdImgIdAnn = "INSERT INTO $this->tbl_immagini_annuncio (idAnnuncio, path_immagine, descrizione_immagine) VALUES ($idAnnuncio, '$cartellaAnnuncio/$nomeImmagine', '$descrizioneImmagine')";
-//                             echo $sqlInsertIdImgIdAnn."<br/>";
-//                             $resultInsertIdImgIdAnn = $mysqli->query($sqlInsertIdImgIdAnn);
-//                             if(!$resultInsertIdImgIdAnn){
-//                                 // Se non è andato a buon fine l'inserimento nel DB
-//                                 echo "Errore durante l'inserimento dell'immagine nel database";
-//                                 $this->errorMsg = "Errore durante l'inserimento dell'immagine nel database";
-//                                 return false;
-//                             }
-//                         } else {
-//                             // Se il file non è stato caricato correttamente nella cartella
-//                             echo "Errore durante il caricamento dell'immagine";
-//                             $this->errorMsg = "Errore durante il caricamente dell'immagine";
-//                             $imgInserite = false;
-//                         }
-//                 } else {
-//                     // Se il file ha dimensione o tipo non corretti
-//                     echo "Dimensione o tipo dell'immagine non validi";
-//                     $this->errorMsg = "Dimensione o tipo dell'immagine non validi";
-//                     $imgInserite = false;
-//                 }
-//             }
-            $i++;
-        }
-        
-        echo "Immagini inserite con successo!";
-        
-        return $imgInserite;
-    }
     
-    
-//     public function spostaRidimensionaImmagine($cartellaAnnuncio, $nomeImmagine, $nomeImmaginePiccola){
     public function spostaRidimensionaImmagine($mysqli, $idAnnuncio, $cartellaAnnuncio){
         // esempio preso da https://www.verot.net/php_class_upload.htm
         $file_ary = $this->reArrayFiles($_FILES['file']);
@@ -210,12 +148,6 @@ class GestoreAnnuncio{
             $sqlInsertIdImgIdAnn = "INSERT INTO $this->tbl_immagini_annuncio (idAnnuncio, path_immagine, descrizione_immagine) VALUES ($idAnnuncio, '$cartellaAnnuncio/$nomeImmagine".".".$ext[count($ext) - 1]."', '$descrizioneImmagine')";
             echo $sqlInsertIdImgIdAnn."<br/>";
             $resultInsertIdImgIdAnn = $mysqli->query($sqlInsertIdImgIdAnn);
-//             $sqlInsertIdImgVetrinaIdAnn = "INSERT INTO $this->tbl_immagini_annuncio (idAnnuncio, path_immagine, descrizione_immagine) VALUES ($idAnnuncio, '$cartellaAnnuncio/$nomeImmagineVetrina".".".$ext[count($ext) - 1]."', '$descrizioneImmagine')";
-//             echo $sqlInsertIdImgVetrinaIdAnn."<br/>";
-//             $resultInsertIdImgVetrinaIdAnn = $mysqli->query($sqlInsertIdImgVetrinaIdAnn);
-//             $sqlInsertIdImgInVenditaIdAnn = "INSERT INTO $this->tbl_immagini_annuncio (idAnnuncio, path_immagine, descrizione_immagine) VALUES ($idAnnuncio, '$cartellaAnnuncio/$nomeImmagineInVendita".".".$ext[count($ext) - 1]."', '$descrizioneImmagine')";
-//             echo $sqlInsertIdImgInVenditaIdAnn."<br/>";
-//             $resultInsertIdImgInVenditaIdAnn = $mysqli->query($sqlInsertIdImgInVenditaIdAnn);
             if(!$resultInsertIdImgIdAnn){
                 // Se non è andato a buon fine l'inserimento nel DB
                 echo "Errore durante l'inserimento dell'immagine nel database";
@@ -323,7 +255,7 @@ class GestoreAnnuncio{
             echo "Cartella creata con successo!<br/>";
         }
         
-        if(!$this->inserisciImmagini($mysqli, $idAnnuncio, $cartellaAnnuncio) && $resultcancellaAnnuncio && $resultCancellaImmagini){
+        if(!$this->spostaRidimensionaImmagine($mysqli, $idAnnuncio, $cartellaAnnuncio) && $resultcancellaAnnuncio && $resultCancellaImmagini){
             $mysqli->rollback();
             $_SESSION['inserito'] = 'NOK';
             $_SESSION['messaggio'] = 'Errore durante l\'aggiornamento dell\'annuncio: '.$this->errorMsg;
