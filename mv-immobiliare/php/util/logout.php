@@ -1,5 +1,5 @@
 <?php
-include 'functions.php';
+include 'utility.php';
 sec_session_start();
 // Elimina tutti i valori della sessione.
 $_SESSION = array();
@@ -9,5 +9,5 @@ $params = session_get_cookie_params();
 setcookie(session_name(), '', time() - 42000, $params["path"], $params["domain"], $params["secure"], $params["httponly"]);
 // Cancella la sessione.
 session_destroy();
-header('Location: ../admin.php');
+header('Location: ../../mv-admin/admin.php');
 ?>

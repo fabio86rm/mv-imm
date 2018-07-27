@@ -1,12 +1,12 @@
 <html>
 <head>
   <title>Login Amministrazione</title>
-  <link rel="icon" href="../images/favicon.ico" />
+  <link rel="icon" href="/images/favicon.ico" />
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="../css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/bootstrap.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-  <script src="../js/bootstrap.min.js"></script>
+  <script src="/js/bootstrap.min.js"></script>
   
   <style>
 	  .form-signin
@@ -86,8 +86,8 @@ define('VERSION', '1.0');
 // Configuration
 //require_once('php/connDB.php');
 try {
-	include 'php/utility.php';
-	include("php/connDB.php");
+    
+	include("../php/util/utility.php");
 	sec_session_start();
 	
 }catch(Exception $e) {
@@ -102,7 +102,7 @@ try {
 			<div class="col-sm-6 col-md-4 col-md-offset-4">
 				<h1 class="text-center login-title">Login Amministrazione</h1>
 				<div class="account-wall">
-					<img class="profile-img" src="../images/user-login-image.png"
+					<img class="profile-img" src="/images/logo/logoFooter.png"
 						alt=""/>
 	<?php
 		if (isset($_SESSION['esito']) and $_SESSION['esito']=='WARN'){
@@ -125,7 +125,7 @@ try {
 			unset($_SESSION['messaggioLogin']);
 		}
 	?>
-					<form name="login_form" action="php/login.php" method="post" class="form-signin">
+					<form name="login_form" action="/php/util/login.php" method="post" class="form-signin">
 						<input name="username" type="text" class="form-control" placeholder="Username" required autofocus>
 						<input name="password" type="password" class="form-control" placeholder="Password" required>
 						<button class="btn btn-lg btn-primary btn-block" type="submit">

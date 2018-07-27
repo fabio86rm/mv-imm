@@ -1,40 +1,8 @@
 <?php
-include '../mvimm/php/functions.php';
-sec_session_start();;
-
-function chkEmail($email)
-{
-	// elimino spazi, "a capo" e altro alle estremità della stringa
-	$email = trim($email);
-
-	// se la stringa è vuota sicuramente non è una mail
-	if(!$email) {
-		return false;
-	}
-
-	// controllo che ci sia una sola @ nella stringa
-	$num_at = count(explode( '@', $email )) - 1;
-	if($num_at != 1) {
-		return false;
-	}
-
-	// controllo la presenza di ulteriori caratteri "pericolosi":
-	if(strpos($email,';') || strpos($email,',') || strpos($email,' ')) {
-		return false;
-	}
-
-	// la stringa rispetta il formato classico di una mail?
-	if(!preg_match( '/^[\w\.\-]+@\w+[\w\.\-]*?\.\w{1,4}$/', $email)) {
-		return false;
-	}
-
-	return true;
-}
+include 'utility.php';
+sec_session_start();
 
 //$email = 'c.ranieri7@gmail.com';
-
-
-
 	$_SESSION['inviato'] = 'ERROR';
  
     $nome = $_POST['name'];
@@ -69,4 +37,5 @@ else{
     //con questo faccio il redirect alla pagina "contatti.html" dopo aver inviato la mail
     header('Location: ' . $_SERVER['HTTP_REFERER']);
 }
+
 ?>

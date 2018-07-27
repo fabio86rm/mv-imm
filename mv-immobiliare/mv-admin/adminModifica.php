@@ -9,9 +9,10 @@
   <link rel="icon" href="/images/favicon.ico" />
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../css/bootstrap.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-  <script src="js/bootstrap.min.js"></script>
+  <script src="../js/bootstrap.min.js"></script>
   <style>
     /* Set height of the grid so .sidenav can be 100% (adjust as needed) */
     .row.content {height: 550px}
@@ -51,8 +52,8 @@ define('VERSION', '1.0');
 // Configuration
 //require_once('phpFunctions/connDB.php');
 try {
-	include '/php/util/utility.php';
-	include("/php/util/connDB.php");
+    include '../php/util/utility.php';
+    include("../php/util/connDB.php");
 	sec_session_start();
 	
 }catch(Exception $e) {
@@ -82,19 +83,19 @@ if (!isset($_SESSION['entrato'])){
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav">
 		<li>
-			<a href="javascript:;" data-toggle="collapse" data-target="#demo1"> Immagini <span class="glyphicon glyphicon-chevron-down"></span></a>
+			<a href="javascript:;" data-toggle="collapse" data-target="#demo1"> Annunci <span class="glyphicon glyphicon-chevron-down"></span></a>
 			<ul id="demo1" class="collapse">
 				<li>
-					<a href="admin.php">Inserisci Immagini</a>
+					<a href="admin.php">Inserisci un annuncio</a>
 				</li>
 				<li>
-					<a href="#">Modifica Immagini</a>
+					<a href="#">Modifica gli annunci</a>
 				</li>
 			</ul>
 		</li>
         <!--<li><a href="#">Age</a></li>
         <li><a href="#">Gender</a></li>-->
-        <li><a href="/php/util/logout.php">Logout</a></li>
+        <li><a href="../php/util/logout.php">Logout</a></li>
       </ul>
     </div>
   </div>
@@ -110,19 +111,19 @@ if (!isset($_SESSION['entrato'])){
 	  <br><br>
       <ul class="nav nav-pills nav-stacked">
 		<li>
-			<a href="javascript:;" data-toggle="collapse" data-target="#demo2" style="font-family:verdana; font-size:15px;">- Immagini</a>
+			<a href="javascript:;" data-toggle="collapse" data-target="#demo2" style="font-family:verdana; font-size:15px;">- Annunci</a>
 			<ul id="demo2" class="collapse">
 				<li>
-					<a href="admin.php">Inserisci Immagini</a>
+					<a href="admin.php">Inserisci un annuncio</a>
 				</li>
 				<li>
-					<a href="#">Modifica Immagini</a>
+					<a href="#">Modifica gli annunci</a>
 				</li>
 			</ul>
 		</li>
         <!--<li><a href="#section2">Age</a></li>
         <li><a href="#section3">Gender</a></li>-->
-        <li><a href="/php/util/logout.php" style="font-family:verdana; font-size:15px;">- Logout</a></li>
+        <li><a href="../php/util/logout.php" style="font-family:verdana; font-size:15px;">- Logout</a></li>
       </ul><br>
     </div>
     <br>
@@ -159,56 +160,32 @@ if (!isset($_SESSION['entrato'])){
 				</div>
 			<?php
 						unset($_SESSION['messaggio']);
-					} else {
-			?>
-				<div class="alert alert-warning" role="alert">
-				  <!--<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>-->
-				  <strong>Attenzione!</strong> Cancellare le immagini prima di cambiare pagina!
-				</div>
-			<?php
 					}
 			?>
 			
 			
 			
-        <form name="select-gallery-form" method="post" action="/php/util/cancellaAnnuncio.php" enctype="multipart/form-data">
+        <form name="select-gallery-form" method="post" action="../php/cancellaAnnuncio.php" enctype="multipart/form-data">
+			
 			<div class="form-group">
-			  <h4 for="selPagineGallery">Selezionare la pagina in cui sono presenti le immagini da modificare:</h4>
-			  <select class="form-control" id="selPagineGallery" name="idPagineGallery" required>
+			  <h4 for="selCategoriaAnnuncio">Selezionare la categoria dell'annuncio da modificare:</h4>
+			  <select class="form-control" id="selCategoriaAnnuncio" name="categoriaAnnuncio" required>
+<!-- 				<option disabled selected value>-- Selezionare una categoria --</option> -->
+				<option>Tutte</option>
 			<?php
-							$sqlPagineGallery = "SELECT * FROM paginegallerie";
+							$sqlCategorie= "SELECT * FROM categorie ORDER BY idCategoria";
 							
 						try{
-							if(isset($_GET['idGallery'])){
-								echo '
-			  <option disabled>-- Selezionare una pagina --</option>';
-								$idGallery = $_GET['idGallery'];
-							} else{
-								echo '
-			  <option disabled selected value>-- Selezionare una pagina --</option>';
-							}
-							if($resultCategorie = $mysqli->query($sqlPagineGallery)){
-								$idCategoria = 0;
-								while($rowCategoria = $resultCategorie->fetch_array(MYSQLI_ASSOC)) {
-									if($idCategoria!=$rowCategoria['idCategoria']){
-										if($idCategoria>0){
-											echo '</optgroup>';
-										}
-										$idCategoria = $rowCategoria['idCategoria'];
-										$sqlCategorie = "SELECT * FROM categorie WHERE idCategoria=$idCategoria";
-										if($resultCategorie = $mysqli->query($sqlCategorie)){
-											$rowCategorie = $resultCategorie->fetch_array(MYSQLI_ASSOC);
-											echo '
-					<optgroup label="'.$rowCategorie['NomeCategoria'].'">';
-										}
-									}
-									if(isset($_GET['idGallery']) && $rowCategoria['idGallery']==$idGallery){
-										echo '
-						<option selected value>'.$rowCategoria['NomeGallery'].'</option>';
-									}else{
-										echo '
-						<option>'.$rowCategoria['NomeGallery'].'</option>';
-									}
+						    if($resultAnnunciRecenti = $mysqli->query($sqlCategorie)){
+						        $categoriaSelezionata = "";
+								while($rowAnnunciRecenti = $resultAnnunciRecenti->fetch_array(MYSQLI_ASSOC)) {
+								    if(isset($_GET['idCategoria']) && $rowAnnunciRecenti['idCategoria']==$_GET['idCategoria']){
+								        $categoriaSelezionata = "selected";
+								    } else {
+								        $categoriaSelezionata = "";
+								    }
+									echo '
+						<option '.$categoriaSelezionata.'>'.$rowAnnunciRecenti['nomeCategoria'].'</option>';
 								}
 							}
 						} catch(Exception $e) {
@@ -225,10 +202,10 @@ if (!isset($_SESSION['entrato'])){
 		
 		
 		<?php
-			if(isset($_GET['idGallery'])){
-				$idGallery = $_GET['idGallery'];
+			if(isset($_GET['idCategoria'])){
+				$idCategoria = $_GET['idCategoria'];
 		?>
-		<form name="delete-image-form" method="post" action="/php/util/cancellaAnnuncio.php" enctype="multipart/form-data">
+		<form name="delete-image-form" method="post" action="../php/cancellaAnnuncio.php" enctype="multipart/form-data">
 			
 			<div class="container">    
 			  <div class="row">
@@ -236,30 +213,32 @@ if (!isset($_SESSION['entrato'])){
 				<?php
 									try{
 										$idPage = isset($_GET['idPage']) ? $_GET['idPage'] : 1;
-										$sqlImages = "SELECT * FROM immagini WHERE idImmagine IN
-											(SELECT idImmagine FROM immagini_paginegallerie WHERE idGallery=$idGallery)";
-										$sqlMetadata = "SELECT * FROM metadata_gallery WHERE modalitaVisualizzazione=1 LIMIT 1";
-										
-										$resultMetadata = $mysqli->query($sqlMetadata);
-										$rowMetadata = $resultMetadata->fetch_array(MYSQLI_ASSOC);
-										$numImgPerPagina = $rowMetadata['numImgPerPagina'];
-										$numImgPerRiga = $rowMetadata['numImgPerRiga'];
+										$whereCondition = "";
+										if($idCategoria!="0"){
+										    $whereCondition = " WHERE idCategoria=$idCategoria";
+										}
+										$sqlAnnuncio = "SELECT A.*, I.path_immagine, I.descrizione_immagine ".
+                                                            " FROM annunci A LEFT JOIN ( ".
+                                                            "   SELECT idAnnuncio, path_immagine, descrizione_immagine ".
+                                                            "       FROM immagini_annuncio ".
+                                                            "       WHERE idImmagine IN ( ".
+                                                            "           SELECT MIN(idImmagine) AS id ".
+                                                            "               FROM immagini_annuncio ".
+                                                            "           GROUP BY idAnnuncio)) I ".
+                                                            "   ON A.idAnnuncio=I.idAnnuncio ".$whereCondition.
+										                    " ORDER BY data_inserimento DESC";
 										$numImgPerPagina = 16;
 										$numImgPerRiga = 4;
 										
-										$col_div = 'col-sm-4';
+										$col_div = 'col-sm-3';
 										
-										if ($numImgPerRiga==4){
-											$col_div = 'col-sm-3';
-										}
-										
-										if ($result = $mysqli->query($sqlImages)) {
+										if ($resultAnnuncio = $mysqli->query($sqlAnnuncio)) {
 											$x = 1;
 											$imgIndex = $numImgPerPagina*($idPage-1)+1;
 											$test = true;
-											//if ($result->num_rows > 0) {
+											//if ($resultAnnuncio->num_rows > 0) {
 												// output data of each row
-												while($row = $result->fetch_array(MYSQLI_ASSOC) and $imgIndex <= $numImgPerPagina*($idPage)) {
+											    while($annuncio = $resultAnnuncio->fetch_array(MYSQLI_ASSOC) and $imgIndex <= $numImgPerPagina*($idPage)) {
 													if($imgIndex>$x and $test){
 														$x++;
 														continue;
@@ -267,13 +246,70 @@ if (!isset($_SESSION['entrato'])){
 														$test = false;
 													}
 													
-													if ($row["Visualizzabile"]){
-														echo '
+													if ($annuncio["annuncio_attivo"]){
+						/*								echo '
 				<div class="'.$col_div.'">
-					<div class="panel-heading">'.$row["NomeImmagine"].'</div>
-					<div class="panel-body"><img src=/'.$row["Path"].' class="img-responsive" style="width:100%;" alt="Image"></div>
-					<div align="center"><input type="checkbox" name="immagini[]" value="'.$row['idImmagine'].'"/></div>
-				</div>';
+					<div class="panel-heading">'.$row["descrizione_immagine"].'</div>
+					<div class="panel-body"><img src=../'.$row["path_immagine"].' class="img-responsive" style="width:100%;" alt="Image"></div>
+				</div>';*/
+													    echo '
+                <table style="width:90%; margin-top: 2%; margin-left: 5%;">
+                	<tbody>
+                		<tr>
+                			<td rowspan="3" width="100" style="border-right: 1px solid #ddd;"><img src=../'.$annuncio["path_immagine"].' class="img-responsive" style="width:100%; padding-right:10%" alt="Image"></td>
+                			<td style="border-right: 1px solid #ddd; width:15%;"><p align="center"><i class="fa fa-eur"></i> '.$annuncio["prezzo"].'</p></td>
+                			<td style="border-right: 1px solid #ddd; width:40%;"><p align="center"><i class="fa fa-map-marker"></i> '.$annuncio["citta"].', '.$annuncio["indirizzo"].'</p></td>
+                			<td style="border-right: 1px solid #ddd; width:15%;"><p align="center"><i class="fa fa-home"></i> '.$annuncio["num_stanze"].' stanze</p></td>
+                			<td>
+                                <a href="adminModificaAnnuncio.php?idAnnuncio='.$annuncio['idAnnuncio'].'">
+                                    <button type="button" class="btn btn-primary" style="margin-left:5%">Modifica</button>
+                                </a>
+                            </td>
+                		</tr>
+                		<tr>
+                			<td style="border-right: 1px solid #ddd;" colspan="3" rowspan="2"><p style="margin-left:2%; margin-top:40px">'.substr($annuncio["descrizione"],0,300).'</p></td>
+                		</tr>
+                		<tr>
+                			<td><button type="button" class="btn btn-danger" style="margin-left:5%" data-toggle="modal" data-target="#modalCancellaAnnuncio'.$annuncio['idAnnuncio'].'">Cancella</button></td>
+                		</tr>
+                	</tbody>
+                </table>
+                <hr style="width:80%; margin-left:5%">';
+													    echo '
+                <div class="modal fade" id="modalCancellaAnnuncio'.$annuncio['idAnnuncio'].'" role="dialog">
+				<div class="modal-dialog">
+				  <div class="modal-content">
+					<div class="modal-header">
+					  <button type="button" class="close" data-dismiss="modal">&times;</button>
+					  <h4 class="modal-title">Cancella annuncio</h4>
+					</div>
+					<div class="modal-body">
+						<div class="form-group">
+							<div class="col-sm-10 col-sm-offset-1 col-xs-12">
+								<span class="wpcf7-form-control-wrap surname">
+									<h3 style="text-align:center">Sei sicuoro di voler cancellare l\'annuncio?</h3>
+								</span>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer" style="border-top: 0;">
+						<div class="form-group">
+							<div class="col-sm-5 col-sm-offset-1 col-xs-12 mt-50">
+								<form action="../php/cancellaAnnuncio.php" method="post" class="wpcf7-form" enctype="multipart/form-data">
+									<input type="hidden" name="idAnnuncio" value="'.$annuncio['idAnnuncio'].'">
+									<input type="hidden" name="idCategoria" value="'.$idCategoria.'">
+									<input value="Yes" class="wpcf7-form-control wpcf7-submit cta-invia" id="delete-event" type="submit"><span class="ajax-loader"></span>
+								</form>
+							</div>
+							<div class="col-sm-5 col-sm-offset-1 col-xs-12 mt-50">
+								<input value="No" class="wpcf7-form-control wpcf7-submit cta-invia" data-dismiss="modal" type="submit"><span class="ajax-loader"></span>
+							</div>
+						</div>
+					</div>
+				  </div>
+				  
+				</div>
+			</div>';
 														$imgIndex++;
 													}
 													
@@ -300,10 +336,6 @@ if (!isset($_SESSION['entrato'])){
 		
 		
 		
-		
-		<div align="center" style="margin-top:5%">
-		  <button type="submit" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span> Cancella le immagini selezionate</button>
-		</div>
 		
 		</form>
 			
@@ -387,7 +419,7 @@ if (!isset($_SESSION['entrato'])){
 
 <?php
 if(isset($_GET['idGallery'])){
-	$idGallery = $_GET['idGallery'];
+	$idCategoria = $_GET['idGallery'];
 
 
 	$const = 0; // nel caso in cui il resto fra il numero totale di immagini caricate e il numero di immagini da voler visualizzare (di default a 6) fosse > 0,
@@ -415,7 +447,7 @@ if(isset($_GET['idGallery'])){
 	$linkPrev = '';
 	if ($idPage>1){
 		$ableArrowPrev =  '';
-		$linkPrev = 'href="adminModifica.php?idGallery='.$idGallery.'&idPage='.($idPage-1).'"';
+		$linkPrev = 'href="adminModifica.php?idGallery='.$idCategoria.'&idPage='.($idPage-1).'"';
 	}
 	echo '
 		<li'.$ableArrowPrev.'>
@@ -428,7 +460,7 @@ if(isset($_GET['idGallery'])){
 	$y = 1;
 	while($y<=$numPagine) {
 		$activeLinkPage = ($y==$idPage) ? ' class="active"' : '';
-		echo '<li'.$activeLinkPage.'><a href="adminModifica.php?idGallery='.$idGallery.'&idPage='.$y.'">'.$y.'</a></li>';
+		echo '<li'.$activeLinkPage.'><a href="adminModifica.php?idGallery='.$idCategoria.'&idPage='.$y.'">'.$y.'</a></li>';
 		$y++;
 	}
 	/*if($numPagine>5 and ($numPagine-$idPage)>1){
@@ -447,7 +479,7 @@ if(isset($_GET['idGallery'])){
 	$linkSucc = '';
 	if ($idPage<$numPagine){
 		$ableArrowSucc = '';
-		$linkSucc = 'href="adminModifica.php?idGallery='.$idGallery.'&idPage='.($idPage+1).'"';
+		$linkSucc = 'href="adminModifica.php?idGallery='.$idCategoria.'&idPage='.($idPage+1).'"';
 	}
 	echo '
 		<li'.$ableArrowSucc.'>

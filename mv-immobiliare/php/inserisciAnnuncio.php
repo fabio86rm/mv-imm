@@ -1,15 +1,15 @@
 <?php
 try {
-    include 'util/functions.php';
+    include 'util/utility.php';
     include("util/connDB.php");
+    include("classi/GestoreAnnuncio.php");
     sec_session_start();
     
-    $nomePagineGallery = $_POST['idPagineGallery'];
-    
     $gestoreAnnuncio = new GestoreAnnuncio();
-    $gestoreAnnuncio->inserisciAnnuncio($nomePagineGallery);
+    $gestoreAnnuncio->inserisciAnnuncio($mysqli);
+//     $gestoreAnnuncio->inserisci($mysqli);
     
-}catch(Exception $e) {
+} catch(Exception $e) {
     echo "<script type='text/javascript'>alert('ERROR: Input data is fail: '".$e->getMessage().")</script>";
 }
 

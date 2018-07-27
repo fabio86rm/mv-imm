@@ -1,6 +1,6 @@
 <?php
 include 'connDB.php';
-include 'functions.php';
+include 'utility.php';
 sec_session_start(); // usiamo la nostra funzione per avviare una sessione php sicura
 
 if(isset($_POST['username'], $_POST['password'])) {
@@ -10,13 +10,13 @@ if(isset($_POST['username'], $_POST['password'])) {
     $myusername=$_POST['username'];
     $mypassword=$_POST['password'];
     // per il login di Porfido:
-    // username = porfidoAdmin
+    // username = mvImmAdmin
     // password = admin123456
     // per inserire un nuovo utente:
     // INSERT INTO `utenti` VALUES(1,'profidoAdmin',AES_ENCRYPT('admin123456','MariaLara88'))
     if(login($myusername, $mypassword, $mysqli, false) == true) {
         // Login eseguito
-        header('Location: ../admin.php');
+        header('Location: /mv-admin/admin.php');
         $_SESSION['entrato'] = 'OK';
         //echo 'Entrato';
     } else {

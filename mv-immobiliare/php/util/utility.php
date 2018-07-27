@@ -12,7 +12,7 @@ function sec_session_start() {
         session_regenerate_id(); // Rigenera la sessione e cancella quella creata in precedenza.
 }
 
-function login($username, $password, $mysqli) {
+function login($username, $password, $mysqli, $effettuaCheckBrute) {
     // Usando statement sql 'prepared' non sarà possibile attuare un attacco di tipo SQL injection.
 	$stmt = $mysqli->prepare("SELECT idUtente FROM utenti WHERE username = ?  and password=AES_ENCRYPT(?,'MariaLara88') LIMIT 1");
 	$stmt->bind_param("ss", $username, $password); // esegue il bind dei parametri '$username' e '$password'.
@@ -54,7 +54,7 @@ function login($username, $password, $mysqli) {
 	    $stmt->bind_result($idUtente); // recupera il risultato della query e lo memorizza nelle relative variabili.
 		$stmt->fetch();
 		$stmt->close();
-		if ($idUtente != null){
+		if ($idUtente != null && $effettuaCheckBrute){
 			$now = time();
 			$mysqli->query("INSERT INTO login_attempts (idUtente, time) VALUES ('$idUtente', '$now')");
 			$mysqli->commit();
@@ -129,6 +129,59 @@ function login_check($mysqli) {
      // Login non eseguito
 	 return false;
    }
+}
+
+function chkEmail($email)
+{
+    // elimino spazi, "a capo" e altro alle estremità della stringa
+    $email = trim($email);
+    
+    // se la stringa è vuota sicuramente non è una mail
+    if(!$email) {
+        return false;
+    }
+    
+    // controllo che ci sia una sola @ nella stringa
+    $num_at = count(explode( '@', $email )) - 1;
+    if($num_at != 1) {
+        return false;
+    }
+    
+    // controllo la presenza di ulteriori caratteri "pericolosi":
+    if(strpos($email,';') || strpos($email,',') || strpos($email,' ')) {
+        return false;
+    }
+    
+    // la stringa rispetta il formato classico di una mail?
+    if(!preg_match( '/^[\w\.\-]+@\w+[\w\.\-]*?\.\w{1,4}$/', $email)) {
+        return false;
+    }
+    
+    return true;
+}
+
+// metodo che permettei determinare la root
+function determineRootFolder() {
+    $rootPath = getenv('ROOT_PATH');
+    if ($rootPath == null) {
+        $root = $_SERVER['DOCUMENT_ROOT'] . '/';
+    }
+    else
+    {
+        $path = explode('?', $_SERVER['REQUEST_URI']);
+        $pathArray = explode('/', $path[0]);
+        unset($pathArray[0], $pathArray[1]);
+        $howDeep = null;
+        foreach ($pathArray as $pathCount) {
+            $howDeep .= '../';
+        }
+        $root = dirname(__FILE__) . $howDeep;
+        if ($howDeep == "../") {
+            $root = null;
+        }
+    }
+    
+    return $root;
 }
 
 ?>
