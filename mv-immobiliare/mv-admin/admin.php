@@ -167,13 +167,13 @@ if (!isset($_SESSION['entrato'])){
 			  <select class="form-control" id="selCategoriaAnnuncio" name="categoriaAnnuncio" required>
 				<option disabled selected value>-- Selezionare una categoria --</option>
 			<?php
-							$sqlCategorie= "SELECT * FROM categorie";
+							$sqlAnnunciRecenti= "SELECT * FROM categorie";
 							
 						try{
-						    if($resultAnnunciRecenti = $mysqli->query($sqlCategorie)){
-								while($rowAnnunciRecenti = $resultAnnunciRecenti->fetch_array(MYSQLI_ASSOC)) {
+						    if($resultAnnunciRecenti = $mysqli->query($sqlAnnunciRecenti)){
+								while($rowAnnuncio = $resultAnnunciRecenti->fetch_array(MYSQLI_ASSOC)) {
 									echo '
-						<option>'.$rowAnnunciRecenti['nomeCategoria'].'</option>';
+						<option>'.$rowAnnuncio['nomeCategoria'].'</option>';
 								}
 							}
 						} catch(Exception $e) {
@@ -220,7 +220,7 @@ if (!isset($_SESSION['entrato'])){
 			</div>
 
           <div class="form-group col-md-12">
-            Formati consentiti per le immagini: JPEG,JPG,PNG,GIF. Capacità massima per immagine 5MB. Dimensione dell'immagine consigliata 800x600.
+            Formati consentiti per le immagini: JPEG,JPG,PNG,GIF. Capacit&agrave massima per immagine 5MB. Dimensione dell'immagine consigliata 800x600.
             <div id="filediv">
             	<input name="file[]" type="file" id="file" accept="image/*"/>
             	<input type="text" class="form-control" id="inputDescrizioneImmagine" placeholder="Descrizione dell'immagine" name="descrizioneImmagine[]">

@@ -173,19 +173,19 @@ if (!isset($_SESSION['entrato'])){
 <!-- 				<option disabled selected value>-- Selezionare una categoria --</option> -->
 				<option>Tutte</option>
 			<?php
-							$sqlCategorie= "SELECT * FROM categorie ORDER BY idCategoria";
+							$sqlAnnunciRecenti= "SELECT * FROM categorie ORDER BY idCategoria";
 							
 						try{
-						    if($resultAnnunciRecenti = $mysqli->query($sqlCategorie)){
+						    if($resultAnnunciRecenti = $mysqli->query($sqlAnnunciRecenti)){
 						        $categoriaSelezionata = "";
-								while($rowAnnunciRecenti = $resultAnnunciRecenti->fetch_array(MYSQLI_ASSOC)) {
-								    if(isset($_GET['idCategoria']) && $rowAnnunciRecenti['idCategoria']==$_GET['idCategoria']){
+								while($rowAnnuncio = $resultAnnunciRecenti->fetch_array(MYSQLI_ASSOC)) {
+								    if(isset($_GET['idCategoria']) && $rowAnnuncio['idCategoria']==$_GET['idCategoria']){
 								        $categoriaSelezionata = "selected";
 								    } else {
 								        $categoriaSelezionata = "";
 								    }
 									echo '
-						<option '.$categoriaSelezionata.'>'.$rowAnnunciRecenti['nomeCategoria'].'</option>';
+						<option '.$categoriaSelezionata.'>'.$rowAnnuncio['nomeCategoria'].'</option>';
 								}
 							}
 						} catch(Exception $e) {
@@ -217,7 +217,7 @@ if (!isset($_SESSION['entrato'])){
 										if($idCategoria!="0"){
 										    $whereCondition = " WHERE idCategoria=$idCategoria";
 										}
-										$sqlAnnuncio = "SELECT A.*, I.path_immagine, I.descrizione_immagine ".
+										$sqlAnnunciRecenti = "SELECT A.*, I.path_immagine, I.descrizione_immagine ".
                                                             " FROM annunci A LEFT JOIN ( ".
                                                             "   SELECT idAnnuncio, path_immagine, descrizione_immagine ".
                                                             "       FROM immagini_annuncio ".
@@ -232,13 +232,13 @@ if (!isset($_SESSION['entrato'])){
 										
 										$col_div = 'col-sm-3';
 										
-										if ($resultAnnuncio = $mysqli->query($sqlAnnuncio)) {
+										if ($resultAnnunciRecenti = $mysqli->query($sqlAnnunciRecenti)) {
 											$x = 1;
 											$imgIndex = $numImgPerPagina*($idPage-1)+1;
 											$test = true;
 											//if ($resultAnnuncio->num_rows > 0) {
 												// output data of each row
-											    while($annuncio = $resultAnnuncio->fetch_array(MYSQLI_ASSOC) and $imgIndex <= $numImgPerPagina*($idPage)) {
+											    while($annuncio = $resultAnnunciRecenti->fetch_array(MYSQLI_ASSOC) and $imgIndex <= $numImgPerPagina*($idPage)) {
 													if($imgIndex>$x and $test){
 														$x++;
 														continue;

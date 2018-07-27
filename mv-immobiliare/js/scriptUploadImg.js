@@ -12,7 +12,7 @@ $(document)
 //							type : 'file',
 //							id : 'file'
 //						}), $("<br/><br/>")));
-						}).fadeIn('slow').append($("<input name=\"file[]\" type=\"file\" id=\"file\"/>"+
+						}).fadeIn('slow').append($("<input name=\"file[]\" type=\"file\" id=\"file\" accept=\"image/*\"/>"+
 								"<input type=\"text\" class=\"form-control\" id=\"inputDescrizioneImmagine\" placeholder=\"Descrizione dell'immagine\" name=\"descrizioneImmagine[]\">", {
 							name : 'file[]',
 							type : 'file',

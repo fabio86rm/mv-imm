@@ -165,9 +165,9 @@ if (!isset($_SESSION['entrato'])){
 			
 		<?php
     		$idAnnuncio = $_GET['idAnnuncio'];
-    		$sqlAnnuncio = "SELECT * FROM annunci WHERE idAnnuncio=$idAnnuncio";
-            $resultAnnuncio = $mysqli->query($sqlAnnuncio);
-            $infoAnnuncio = $resultAnnuncio->fetch_array(MYSQLI_ASSOC);
+    		$sqlAnnunciRecenti = "SELECT * FROM annunci WHERE idAnnuncio=$idAnnuncio";
+            $resultAnnunciRecenti = $mysqli->query($sqlAnnunciRecenti);
+            $infoAnnuncio = $resultAnnunciRecenti->fetch_array(MYSQLI_ASSOC);
             $categoriaAnnuncio = $infoAnnuncio['idCategoria'];
 		?>
 			
@@ -179,18 +179,18 @@ if (!isset($_SESSION['entrato'])){
 			  <select class="form-control" id="selCategoriaAnnuncio" name="categoriaAnnuncio" required>
 				<option disabled selected value>-- Selezionare una categoria --</option>
 			<?php
-							$sqlCategorie= "SELECT * FROM categorie";
+							$sqlAnnunciRecenti= "SELECT * FROM categorie";
 							
 						try{
-						    if($resultCategorie = $mysqli->query($sqlCategorie)){
-								while($rowCategoria = $resultCategorie->fetch_array(MYSQLI_ASSOC)) {
-									if($rowCategoria['idCategoria']==$categoriaAnnuncio){
+						    if($resultAnnunciRecenti = $mysqli->query($sqlAnnunciRecenti)){
+								while($rowAnnuncio = $resultAnnunciRecenti->fetch_array(MYSQLI_ASSOC)) {
+									if($rowAnnuncio['idCategoria']==$categoriaAnnuncio){
 									    $categoriaSelezionata = "selected";
 									} else {
 									    $categoriaSelezionata = "";
 									}
 									echo '
-						<option '.$categoriaSelezionata.'>'.$rowCategoria['nomeCategoria'].'</option>';
+						<option '.$categoriaSelezionata.'>'.$rowAnnuncio['nomeCategoria'].'</option>';
 								}
 							}
 						} catch(Exception $e) {
