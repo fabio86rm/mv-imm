@@ -333,19 +333,19 @@ try {
 				try{
 				    if($resultAnnunciRecenti = $mysqli->query($sqlAnnunciRecenti)){
 				        $i = 0;
-						while($rowAnnunciRecenti = $resultAnnunciRecenti->fetch_array(MYSQLI_ASSOC)) {
-						    $pathImmagine = $rowAnnunciRecenti['path_immagine'];
+						while($rowAnnuncio = $resultAnnunciRecenti->fetch_array(MYSQLI_ASSOC)) {
+						    $pathImmagine = $rowAnnuncio['path_immagine'];
 						    $pathImmagine = substr($pathImmagine,0,strrpos($pathImmagine,'/')).'/'.$dim_x_vetrina.'x'.$dim_y_vetrina.substr($pathImmagine,strrpos($pathImmagine,'/'));
 						    $i++;
 							echo '
 				<div class="col-md-4 box_2">
 			     	 <a href="single.html" class="mask">
 			     	   	<img class="img-responsive zoom-img" src="'.$pathImmagine.'" style="width: 100%" alt="">
-			     	   	<span class="four">&#8364; '.number_format($rowAnnunciRecenti['prezzo'],2,",",".").'</span>
+			     	   	<span class="four">&#8364; '.number_format($rowAnnuncio['prezzo'],2,",",".").'</span>
 			     	 </a>
 			     	   <div class="most-1">
-			     	   	 <h5><a href="single.html">'.$rowAnnunciRecenti['nomeCategoria'].'</a></h5>
-			     	    	<p>'.$rowAnnunciRecenti['citta'].', '.$rowAnnunciRecenti['indirizzo'].'</p>
+			     	   	 <h5><a href="single.html">'.$rowAnnuncio['nomeCategoria'].'</a></h5>
+			     	    	<p>'.$rowAnnuncio['citta'].', '.$rowAnnuncio['indirizzo'].'</p>
 			     	   </div>
 			 </div>';
 							if($i>2){
@@ -496,8 +496,8 @@ try {
 				
 				try{
 			        $i = 0;
-			        while($rowAnnunciRecenti = $resultAnnunciRecenti->fetch_array(MYSQLI_ASSOC)) {
-			            $pathImmagine = $rowAnnunciRecenti['path_immagine'];
+			        while($rowAnnuncio = $resultAnnunciRecenti->fetch_array(MYSQLI_ASSOC)) {
+			            $pathImmagine = $rowAnnuncio['path_immagine'];
 			            $pathImmagine = substr($pathImmagine,0,strrpos($pathImmagine,'/')).'/'.$dim_x_in_vendita.'x'.$dim_y_in_vendita.substr($pathImmagine,strrpos($pathImmagine,'/'));
 					    $i++;
 						echo '
@@ -507,13 +507,13 @@ try {
 							 <div class="col-md1">
 								 <div class="col-md2">
 									 <div class="col-md4">
-									 	<strong>'.$rowAnnunciRecenti['citta'].'</strong>
-									 	<small>'.$rowAnnunciRecenti['nomeCategoria'].'</small>
+									 	<strong>'.$rowAnnuncio['citta'].'</strong>
+									 	<small>'.$rowAnnuncio['nomeCategoria'].'</small>
 									 </div>
 									 <div class="clearfix"> </div>
 								 </div>
-								 <p>Situato in '.$rowAnnunciRecenti['indirizzo'].'</p>
-								 <p class="cost">&#8364; '.number_format($rowAnnunciRecenti['prezzo'],2,",",".").'</p>
+								 <p>Situato in '.$rowAnnuncio['indirizzo'].'</p>
+								 <p class="cost">&#8364; '.number_format($rowAnnuncio['prezzo'],2,",",".").'</p>
 								 <a href="single.html" class="hvr-sweep-to-right more">vedi</a>
 							 </div>
 						</div>
