@@ -262,7 +262,7 @@ if (!isset($_SESSION['entrato'])){
           </script>
           
           <div class="form-group col-md-12">
-            Formati consentiti per le immagini: JPEG,JPG,PNG,GIF. Capacità massima per immagine 5MB. Dimensione dell'immagine consigliata 800x600.
+            Formati consentiti per le immagini: JPEG,JPG,PNG,GIF. Capacit&agrave massima per immagine 5MB. Dimensione dell'immagine consigliata 800x600.
             <div id="filediv" style="margin-top:2%">
             </div>
             <input type="button" id="add_more" class="btn btn-primary" value="Aggiungi altre immagini"/>
