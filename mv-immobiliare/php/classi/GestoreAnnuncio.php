@@ -1,7 +1,7 @@
 <?php
 
 require_once 'classi/class.upload.php';
-include_once '../../config/constants.php';
+include_once '../config/constants.php';
 
 class GestoreAnnuncio{
     
@@ -119,7 +119,7 @@ class GestoreAnnuncio{
                     echo 'error : ' . $handle->error;
                 }
                 // creazione immagine per "in vetrina"
-//                 $handle->file_new_name_body   = $nomeImmagineVetrina;
+                $handle->file_new_name_body   = $nomeImmagine;
                 $handle->image_resize         = true;
                 $handle->image_x              = $dim_x_vetrina;
                 $handle->image_y              = $dim_y_vetrina;
@@ -131,7 +131,7 @@ class GestoreAnnuncio{
                     echo 'error : ' . $handle->error;
                 }
                 // creazione immagine per "in vendita"
-//                 $handle->file_new_name_body   = $nomeImmagineInVendita;
+                $handle->file_new_name_body   = $nomeImmagine;
                 $handle->image_resize         = true;
                 $handle->image_x              = $dim_x_in_vendita;
                 $handle->image_y              = $dim_y_in_vendita;
