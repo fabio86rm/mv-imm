@@ -1,7 +1,7 @@
 <?php
 
 require_once 'classi/class.upload.php';
-include_once 'util/constants.php';
+include_once '../../config/constants.php';
 
 class GestoreAnnuncio{
     

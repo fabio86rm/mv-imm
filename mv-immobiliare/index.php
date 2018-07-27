@@ -61,7 +61,7 @@ define('VERSION', '1.0');
 try {
     include 'php/util/utility.php';
     include("php/util/connDB.php");
-    include_once 'php/util/constants.php';
+    include_once 'config/constants.php';
 // 	sec_session_start();
 	
 }catch(Exception $e) {
