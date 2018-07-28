@@ -317,7 +317,7 @@ try {
 			    $dim_x_vetrina = DIM_X_VETRINA;
 			    $dim_y_vetrina = DIM_Y_VETRINA;
 			
-				$sqlAnnunciRecenti= "SELECT A.citta, A.indirizzo, A.prezzo, C.nomeCategoria, I.path_immagine ".
+				$sqlAnnunciRecenti= "SELECT A.idAnnuncio, A.citta, A.indirizzo, A.prezzo, A.num_stanze, C.nomeCategoria, I.path_immagine ".
                                     " FROM annunci A LEFT JOIN ( ".
                                     "  SELECT idAnnuncio, path_immagine, descrizione_immagine ".
                                     "      FROM immagini_annuncio ".
@@ -339,12 +339,12 @@ try {
 						    $i++;
 							echo '
 				<div class="col-md-4 box_2">
-			     	 <a href="single.html" class="mask">
+			     	 <a href="imm_single.php?idAnnuncio='.$rowAnnuncio['idAnnuncio'].'" class="mask">
 			     	   	<img class="img-responsive zoom-img" src="'.$pathImmagine.'" style="width: 100%" alt="">
 			     	   	<span class="four">&#8364; '.number_format($rowAnnuncio['prezzo'],2,",",".").'</span>
 			     	 </a>
 			     	   <div class="most-1">
-			     	   	 <h5><a href="single.html">'.$rowAnnuncio['nomeCategoria'].'</a></h5>
+			     	   	 <h5><a href="imm_single.php?idAnnuncio='.$rowAnnuncio['idAnnuncio'].'">'.$rowAnnuncio['nomeCategoria'].'</a></h5>
 			     	    	<p>'.$rowAnnuncio['citta'].', '.$rowAnnuncio['indirizzo'].'</p>
 			     	   </div>
 			 </div>';
@@ -503,7 +503,7 @@ try {
 						echo '
 			         <div class="col-md-3 project-grid">
 						<div class="project-grid-top">
-							 <a href="single.html" class="mask"><img src="'.$pathImmagine.'" class="img-responsive zoom-img" style="width:100%" alt=""/></a>
+							 <a href="imm_single.php?idAnnuncio='.$rowAnnuncio['idAnnuncio'].'" class="mask"><img src="'.$pathImmagine.'" class="img-responsive zoom-img" style="width:100%" alt=""/></a>
 							 <div class="col-md1">
 								 <div class="col-md2">
 									 <div class="col-md4">
@@ -514,7 +514,8 @@ try {
 								 </div>
 								 <p>Situato in '.$rowAnnuncio['indirizzo'].'</p>
 								 <p class="cost">&#8364; '.number_format($rowAnnuncio['prezzo'],2,",",".").'</p>
-								 <a href="single.html" class="hvr-sweep-to-right more">vedi</a>
+                                 <p class="cost"><i class="fa fa-home"></i> '.$rowAnnuncio['num_stanze'].' stanze</p>
+								 <a href="imm_single.php?idAnnuncio='.$rowAnnuncio['idAnnuncio'].'" class="hvr-sweep-to-right more">vedi</a>
 							 </div>
 						</div>
 					</div>';
@@ -531,7 +532,7 @@ try {
 		</div>
 		<div align="center">
 			<br/>
-			<a href="imm_loc_all.html" class="hvr-sweep-to-right more">VEDI TUTTI GLI IMMOBILI IN VENDITA</a>
+			<a href="imm_loc_all.php" class="hvr-sweep-to-right more">VEDI TUTTI GLI IMMOBILI IN VENDITA</a>
 		</div>
 	</div>
 <!--//project-->
