@@ -277,12 +277,15 @@ if (!isset($_SESSION['entrato'])){
             	   if($resultImmagini->num_rows > 0){
             	       while($immagini = $resultImmagini->fetch_array(MYSQLI_ASSOC)){
             	           $nomediv = "dcba$i";
+            	           $pathImmagine = $immagini['path_immagine'];
+            	           $nomeImmagine = basename($pathImmagine);
                 	       echo '
                 <div id="'.$nomediv.'" class="abcd">
-                    <img id="previewimg1" src="../'.$immagini['path_immagine'].'">
+                    <img id="previewimg1" src="../'.$pathImmagine.'">
                     <input id="delete" class="btn btn-danger" value="Elimina immagine" style="margin-left: 2%" type="button" onclick="removeElement(\'divImmagine\',\''.$nomediv.'\');">
-                    <input name="file[]" id="file" accept="image/*" style="display: none;" type="file">
-                    <input type="text" class="form-control" id="inputDescrizioneImmagine" placeholder="Descrizione dell\'immagine" name="descrizioneImmagine[]" value="'.$immagini['descrizione_immagine'].'">
+                    <input name="pathImmagini[]" type="hidden" value="../'.$pathImmagine.'">
+                    <input name="immagini[]" type="hidden" value="'.$nomeImmagine.'">
+                    <input type="text" class="form-control" id="inputDescrizioneImmagine" placeholder="Descrizione dell\'immagine" name="descrizioneImmaginePresente[]" value="'.$immagini['descrizione_immagine'].'">
                 </div>
                             ';
                 	       $i++;

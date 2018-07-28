@@ -12,7 +12,7 @@ try {
     echo "<script type='text/javascript'>alert('ERROR: Input data is fail: '".$e->getMessage().")</script>";
 }
 
-// $conn = null;
-// header('Location: ' . $_SERVER['HTTP_REFERER']);
+$conn = null;
+header('Location: ' . $_SERVER['HTTP_REFERER']);
 
 ?> 

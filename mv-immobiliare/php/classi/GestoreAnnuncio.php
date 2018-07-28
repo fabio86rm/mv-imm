@@ -185,7 +185,7 @@ class GestoreAnnuncio{
         echo "Query per cancellare annuncio: ".$sqlCancellaAnnuncio."<br/>";
         echo "Query per cancellare immagini: ".$sqlCancellaImmagini."<br/>";
         echo "Cartella da cui cancellare immagini: ".$cartellaAnnuncio."<br/>";
-        $this->cancellaCartella($cartellaAnnuncio);
+        $this->cancellaCartella($cartellaAnnuncio, null);
         $resultcancellaAnnuncio = $mysqli->query($sqlCancellaAnnuncio);
         $resultCancellaImmagini = $mysqli->query($sqlCancellaImmagini);
         if($resultcancellaAnnuncio && $resultCancellaImmagini){
@@ -200,18 +200,24 @@ class GestoreAnnuncio{
         
     }
     
-    public static function cancellaCartella($cartellaAnnuncio) {
+    public static function cancellaCartella($cartellaAnnuncio, $immaginiDaNonCancellare) {
         $dir = '../'.$cartellaAnnuncio;
         $it = new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS);
         $files = new RecursiveIteratorIterator($it,
             RecursiveIteratorIterator::CHILD_FIRST);
         foreach($files as $file) {
+            echo "file da cancellare: ".$file->getFilename()."<br/>";
             if ($file->isDir()){
                 rmdir($file->getRealPath());
                 echo "cartella cancellata<br/>";
-            } else {
+            } else if (!is_null($immaginiDaNonCancellare) && !in_array($file->getFilename(), $immaginiDaNonCancellare)){
                 unlink($file->getRealPath());
-                echo "file cancellati<br/>";
+                echo "controllo immagini da non cancellare: file cancellato<br/>";
+            } else if (is_null($immaginiDaNonCancellare)){
+                unlink($file->getRealPath());
+                echo "file cancellato<br/>";
+            } else {
+                echo "il file ".$file->getFilename()." non e' stato cancellato<br/>";
             }
         }
         rmdir($dir);
@@ -233,13 +239,40 @@ class GestoreAnnuncio{
         $indirizzo = str_replace("'","\'",$indirizzo);
         $descrizioneAnnuncio = str_replace("'","\'",$descrizioneAnnuncio);
         
+        $whereConditionImmaginiDaNonCancellare = "";
+        $immaginiDaNonCancellare = null;
+        $pathImmaginiDaNonCancellare = null;
+        $aggiornaImmagini = true;
+        if(isset($_POST['immagini'])){
+            $immaginiDaNonCancellare = $_POST['immagini'];
+            $pathImmaginiDaNonCancellare = $_POST['pathImmagini'];
+            $descrizioniImmagini = $_POST['descrizioneImmaginePresente'];
+            
+            $whereConditionImmaginiDaNonCancellare = " AND path_immagine NOT IN (";
+            echo "Immagini da non cancellare: <br/>";
+            foreach($pathImmaginiDaNonCancellare as $index => $value){
+                $path = str_replace('../','',$value);
+                $whereConditionImmaginiDaNonCancellare .= "'$path', ";
+                echo $immaginiDaNonCancellare[$index].'<br/>';
+                $sqlAggiornaImmagini = "UPDATE immagini_annuncio SET descrizione_immagine='".$descrizioniImmagini[$index]."' WHERE idAnnuncio=$idAnnuncio AND path_immagine='".$path."'";
+                echo "Query per aggiornare l'immagine: ".$sqlAggiornaImmagini."<br/>";
+                $resultAggiornaImmagini = $mysqli->query($sqlAggiornaImmagini);
+                if(!$resultAggiornaImmagini){
+                    $aggiornaImmagini = false;
+                }
+            }
+            $whereConditionImmaginiDaNonCancellare = substr($whereConditionImmaginiDaNonCancellare, 0, strlen($whereConditionImmaginiDaNonCancellare)-2);
+            $whereConditionImmaginiDaNonCancellare .= ")";
+        }
+        
+        
         $sqlAggiornaAnnuncio = "UPDATE $this->tbl_annunci SET idCategoria=(SELECT idCategoria FROM categorie WHERE nomeCategoria='$categoriaAnnuncio'), citta='$citta', ".
                                 " indirizzo='$indirizzo', prezzo=$prezzo, descrizione='$descrizioneAnnuncio', num_stanze=$numStanze WHERE idAnnuncio=$idAnnuncio";
-        $sqlCancellaImmagini = "DELETE FROM $this->tbl_immagini_annuncio WHERE idAnnuncio=$idAnnuncio";
+        $sqlCancellaImmagini = "DELETE FROM $this->tbl_immagini_annuncio WHERE idAnnuncio=$idAnnuncio $whereConditionImmaginiDaNonCancellare";
         echo "Query per aggiornare l'annuncio: ".$sqlAggiornaAnnuncio."<br/>";
         echo "Query per cancellare immagini: ".$sqlCancellaImmagini."<br/>";
         echo "Cartella da cui cancellare immagini: ".$cartellaAnnuncio."<br/>";
-        $this->cancellaCartella($cartellaAnnuncio);
+        $this->cancellaCartella($cartellaAnnuncio, $immaginiDaNonCancellare);
         echo "cartella cancellata<br/>";
         $resultcancellaAnnuncio = $mysqli->query($sqlAggiornaAnnuncio);
         echo "query di cancellazione annuncio eseguita<br/>";
@@ -250,12 +283,12 @@ class GestoreAnnuncio{
             echo "Errore durante la creazione della cartella dell\'annuncio con ID $idAnnuncio<br/>";
             $_SESSION['inserito'] = 'NOK';
             $_SESSION['messaggio'] = 'Errore durante la creazione della cartella delle immagini';
-            throw new RuntimeException('Errore durante la creazione della cartella delle immagini.');
+//             throw new RuntimeException('Errore durante la creazione della cartella delle immagini.');
         } else {
             echo "Cartella creata con successo!<br/>";
         }
         
-        if(!$this->spostaRidimensionaImmagine($mysqli, $idAnnuncio, $cartellaAnnuncio) && $resultcancellaAnnuncio && $resultCancellaImmagini){
+        if((isset($_FILES['file']) && !$this->spostaRidimensionaImmagine($mysqli, $idAnnuncio, $cartellaAnnuncio)) || !$resultcancellaAnnuncio || !$resultCancellaImmagini || !$aggiornaImmagini){
             $mysqli->rollback();
             $_SESSION['inserito'] = 'NOK';
             $_SESSION['messaggio'] = 'Errore durante l\'aggiornamento dell\'annuncio: '.$this->errorMsg;
