@@ -131,14 +131,16 @@ try {
   
   <?php 
   
-  $sqlAnnunciRecenti= "SELECT A.idAnnuncio, A.citta, A.indirizzo, A.prezzo, C.nomeCategoria, I.path_immagine ".
-                "FROM annunci A ".
-                "LEFT JOIN immagini_annuncio I ". 
-                "  ON A.idAnnuncio=I.idAnnuncio ".
-                "JOIN categorie C ".
-                "  ON A.idCategoria = C.idCategoria ".
-                "Where A.idAnnuncio=76 ".
-                "ORDER BY data_inserimento DESC ";
+  $idAnnuncio = $_GET['idAnnuncio'];
+  
+  $sqlAnnunciRecenti= "SELECT A.idAnnuncio, A.citta, A.indirizzo, A.prezzo, A.num_stanze, A.descrizione, C.nomeCategoria, I.path_immagine ".
+                      " FROM annunci A ".
+                      " LEFT JOIN immagini_annuncio I ".
+                      "   ON A.idAnnuncio=I.idAnnuncio ".
+                      " JOIN categorie C ".
+                      "   ON A.idCategoria = C.idCategoria ".
+                      " WHERE A.idAnnuncio = $idAnnuncio ".
+                      " ORDER BY data_inserimento DESC ";
   try{
       if($resultAnnunciRecenti = $mysqli->query($sqlAnnunciRecenti)){
           while($rowAnnuncio = $resultAnnunciRecenti->fetch_array(MYSQLI_ASSOC)) {
@@ -211,56 +213,100 @@ $(window).load(function() {
 		<div class="col-md-3">
 			<div class="single-box-right right-immediate">
 		     	<h4>Immobili Correlati</h4>
-				<div class="single-box-img ">
+		     		
+                      <?php 
+                      
+                      $dim_x_in_vendita = DIM_X_IN_VENDITA;
+                      $dim_y_in_vendita = DIM_Y_IN_VENDITA;
+                      
+                      $sqlAnnunciCorrelati= "SELECT A.idAnnuncio, A.citta, A.indirizzo, A.prezzo, A.num_stanze, C.nomeCategoria, I.path_immagine ".
+                                          " FROM annunci A LEFT JOIN ( ".
+                                          "  SELECT idAnnuncio, path_immagine, descrizione_immagine ".
+                                          "      FROM immagini_annuncio ".
+                                          "      WHERE idImmagine IN ( ".
+                                          "          SELECT MIN(idImmagine) AS id ".
+                                          "              FROM immagini_annuncio ".
+                                          "          GROUP BY idAnnuncio)) I ".
+                                          "  ON A.idAnnuncio=I.idAnnuncio ".
+                                          "  JOIN categorie C ".
+                                          "  ON A.idCategoria = C.idCategoria ".
+                                          " WHERE A.citta = (SELECT citta FROM annunci WHERE idAnnuncio=$idAnnuncio) ".
+                                          " AND A.idAnnuncio!=$idAnnuncio ".
+                                          "ORDER BY data_inserimento DESC ";
+                      
+                      try{
+                          if($resultAnnunciCorrelati = $mysqli->query($sqlAnnunciCorrelati)){
+                              while($rowAnnuncio = $resultAnnunciCorrelati->fetch_array(MYSQLI_ASSOC)) {
+                                  $pathImmagine = $rowAnnuncio['path_immagine'];
+                                  $pathImmagine = substr($pathImmagine,0,strrpos($pathImmagine,'/')).'/'.$dim_x_in_vendita.'x'.$dim_y_in_vendita.substr($pathImmagine,strrpos($pathImmagine,'/'));
+                                  echo '
+            	<div class="single-box-img ">
 					<div class="box-img">
-						<a href="single.html"><img class="img-responsive" src="images/sl.jpg" alt=""></a>
+						<a href="imm_single.php?idAnnuncio='.$rowAnnuncio['idAnnuncio'].'"><img class="img-responsive" src="'.$pathImmagine.'" alt=""></a>
 					</div>
 					<div class="box-text">
 						<p>testo</p>
 						<p>testo</p>
 					</div>
 					<div class="clearfix"> </div>
-				</div>
-				<div class="single-box-img">
-					<div class="box-img">
-						<a href="single.html"><img class="img-responsive" src="images/sl1.jpg" alt=""></a>
-					</div>
-					<div class="box-text">
-						<p>testo</p>
-						<p>testo</p>
-					</div>
-					<div class="clearfix"> </div>
-				</div>
-				<div class="single-box-img">
-					<div class="box-img">
-						<a href="single.html"><img class="img-responsive" src="images/sl2.jpg" alt=""></a>
-					</div>
-					<div class="box-text">
-						<p>testo</p>
-						<p>testo</p>
-					</div>
-					<div class="clearfix"> </div>
-				</div>
-				<div class="single-box-img">
-					<div class="box-img">
-						<a href="single.html"><img class="img-responsive" src="images/sl3.jpg" alt=""></a>
-					</div>
-					<div class="box-text">
-						<p>testo</p>
-						<p>testo</p>
-					</div>
-					<div class="clearfix"> </div>
-				</div>
-				<div class="single-box-img">
-					<div class="box-img">
-						<a href="single.html"><img class="img-responsive" src="images/sl4.jpg" alt=""></a>
-					</div>
-					<div class="box-text">
-						<p>testo</p>
-						<p>testo</p>
-					</div>
-					<div class="clearfix"> </div>
-				</div>
+				</div>';
+                              }
+                          }
+                      } catch(Exception $e) {
+                          echo "<script type='text/javascript'>alert('ERRORE: Se il problema si presenta nuovamente, contattare l\'amministratore '".$e->getMessage().")</script>";
+                      }
+                      ?>
+							
+<!-- 				<div class="single-box-img "> -->
+<!-- 					<div class="box-img"> -->
+<!-- 						<a href="single.html"><img class="img-responsive" src="images/sl.jpg" alt=""></a> -->
+<!-- 					</div> -->
+<!-- 					<div class="box-text"> -->
+<!-- 						<p>testo</p> -->
+<!-- 						<p>testo</p> -->
+<!-- 					</div> -->
+<!-- 					<div class="clearfix"> </div> -->
+<!-- 				</div> -->
+<!-- 				<div class="single-box-img"> -->
+<!-- 					<div class="box-img"> -->
+<!-- 						<a href="single.html"><img class="img-responsive" src="images/sl1.jpg" alt=""></a> -->
+<!-- 					</div> -->
+<!-- 					<div class="box-text"> -->
+<!-- 						<p>testo</p> -->
+<!-- 						<p>testo</p> -->
+<!-- 					</div> -->
+<!-- 					<div class="clearfix"> </div> -->
+<!-- 				</div> -->
+<!-- 				<div class="single-box-img"> -->
+<!-- 					<div class="box-img"> -->
+<!-- 						<a href="single.html"><img class="img-responsive" src="images/sl2.jpg" alt=""></a> -->
+<!-- 					</div> -->
+<!-- 					<div class="box-text"> -->
+<!-- 						<p>testo</p> -->
+<!-- 						<p>testo</p> -->
+<!-- 					</div> -->
+<!-- 					<div class="clearfix"> </div> -->
+<!-- 				</div> -->
+<!-- 				<div class="single-box-img"> -->
+<!-- 					<div class="box-img"> -->
+<!-- 						<a href="single.html"><img class="img-responsive" src="images/sl3.jpg" alt=""></a> -->
+<!-- 					</div> -->
+<!-- 					<div class="box-text"> -->
+<!-- 						<p>testo</p> -->
+<!-- 						<p>testo</p> -->
+<!-- 					</div> -->
+<!-- 					<div class="clearfix"> </div> -->
+<!-- 				</div> -->
+<!-- 				<div class="single-box-img"> -->
+<!-- 					<div class="box-img"> -->
+<!-- 						<a href="single.html"><img class="img-responsive" src="images/sl4.jpg" alt=""></a> -->
+<!-- 					</div> -->
+<!-- 					<div class="box-text"> -->
+<!-- 						<p>testo</p> -->
+<!-- 						<p>testo</p> -->
+<!-- 					</div> -->
+<!-- 					<div class="clearfix"> </div> -->
+<!-- 				</div> -->
 		 </div>
 			
 	  </div>
@@ -279,7 +325,7 @@ $(window).load(function() {
 			    $dim_x_vetrina = DIM_X_VETRINA;
 			    $dim_y_vetrina = DIM_Y_VETRINA;
 			
-				$sqlAnnunciRecenti= "SELECT A.citta, A.indirizzo, A.prezzo, A.num_stanze, C.nomeCategoria, I.path_immagine ".
+				$sqlAnnunciRecenti= "SELECT A.idAnnuncio, A.citta, A.indirizzo, A.prezzo, A.num_stanze, C.nomeCategoria, I.path_immagine ".
                                     " FROM annunci A LEFT JOIN ( ".
                                     "  SELECT idAnnuncio, path_immagine, descrizione_immagine ".
                                     "      FROM immagini_annuncio ".
@@ -302,12 +348,12 @@ $(window).load(function() {
 							echo '
 				            <li>
                                 <div class="project-fur">
-								    <a href="imm_single.php" ><img class="img-responsive" src="'.$pathImmagine.'" alt="" />	</a>
+								    <a href="imm_single.php?idAnnuncio='.$rowAnnuncio['idAnnuncio'].'" ><img class="img-responsive" src="'.$pathImmagine.'" alt="" />	</a>
 									<div class="fur">
 										<div class="fur1">
 		                                    <span class="fur-money">&#8364; '.number_format($rowAnnuncio['prezzo'],2,",",".").'</span>
 		                                    <span class="fur-money"><i class="fa fa-home"></i> '.$rowAnnuncio['num_stanze'].' stanze</span>
-		                                    <h6 class="fur-name"><a href="single.html">'.$rowAnnuncio['nomeCategoria'].'</a></h6>
+		                                    <h6 class="fur-name"><a href="imm_single.php?idAnnuncio='.$rowAnnuncio['idAnnuncio'].'">'.$rowAnnuncio['nomeCategoria'].'</a></h6>
 		                                   	<span>'.$rowAnnuncio['indirizzo'].'</span>
                                			</div>
 			                            <div class="fur2">
