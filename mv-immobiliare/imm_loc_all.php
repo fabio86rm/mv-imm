@@ -312,7 +312,7 @@ try {
 			            echo '
 	       <div class="col-md-3 grid-city">
 				<div class="grid-lo">
-					<a href="'.$rowCategoria['linkCategoria'].'">
+					<a href="categoria_all.php?idCategoria='.$rowCategoria['idCategoria'].'">
 						<figure class="effect-layla">
 							<img class="img-responsive" src="'.$rowCategoria['immagineCategoria'].'" alt="residenziali">
 							<figcaption>
@@ -355,7 +355,7 @@ premium-project-->
 			    $dim_x_vetrina = DIM_X_VETRINA;
 			    $dim_y_vetrina = DIM_Y_VETRINA;
 			
-				$sqlAnnunciRecenti= "SELECT A.citta, A.indirizzo, A.prezzo, A.num_stanze, C.nomeCategoria, I.path_immagine ".
+				$sqlAnnunciRecenti= "SELECT A.idAnnuncio, A.citta, A.indirizzo, A.prezzo, A.num_stanze, C.nomeCategoria, I.path_immagine ".
                                     " FROM annunci A LEFT JOIN ( ".
                                     "  SELECT idAnnuncio, path_immagine, descrizione_immagine ".
                                     "      FROM immagini_annuncio ".
@@ -378,12 +378,12 @@ premium-project-->
 							echo '
 				            <li>
                                 <div class="project-fur">
-								    <a href="imm_single.php" ><img class="img-responsive" src="'.$pathImmagine.'" alt="" />	</a>
+								    <a href="imm_single.php?idAnnuncio='.$rowAnnuncio['idAnnuncio'].'" ><img class="img-responsive" src="'.$pathImmagine.'" alt="" />	</a>
 									<div class="fur">
 										<div class="fur1">
 		                                    <span class="fur-money">&#8364; '.number_format($rowAnnuncio['prezzo'],2,",",".").'</span>
 		                                    <span class="fur-money"><i class="fa fa-home"></i> '.$rowAnnuncio['num_stanze'].' stanze</span>
-		                                    <h6 class="fur-name"><a href="single.html">'.$rowAnnuncio['nomeCategoria'].'</a></h6>
+		                                    <h6 class="fur-name"><a href="imm_single.php?idAnnuncio='.$rowAnnuncio['idAnnuncio'].'">'.$rowAnnuncio['nomeCategoria'].'</a></h6>
 		                                   	<span>'.$rowAnnuncio['indirizzo'].'</span>
                                			</div>
 			                            <div class="fur2">
